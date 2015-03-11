@@ -16,7 +16,7 @@ function love.load()
 	stateList = {}
 	stateList["MainMenu"] = MainMenu
 	stateList["WorldMap"] = WorldMap
-	sm = StateMachine(stateList, "MainMenu", Player(35,35))
+	sm = StateMachine(stateList, "MainMenu", Player(0,0))
 end
 
 -- Update Functions

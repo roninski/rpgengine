@@ -84,7 +84,7 @@ function MainMenu:draw()
 end
 
 function MainMenu:update(dt)
-	print (tostring(dt))
+	--print (tostring(dt))
 	if (self.keypressDelay > 0) then
 		self.keypressDelay = self.keypressDelay - dt
 	end

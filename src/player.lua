@@ -18,7 +18,7 @@ function Player:_init(x, y)
 	self.x     = x
 	self.y     = y
 	self.dir = "down"
-	self.activeMap = "testmap"
+	self.activeMap = "test3"
 end
 
 function Player:changemap(newmap)

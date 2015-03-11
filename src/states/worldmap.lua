@@ -37,11 +37,6 @@ function WorldMap:onPush(player)
 	self.mapPath = "res.map."..self.player.activeMap
 	print (self.mapPath)
 	self.map = require(self.mapPath)
-	if (self.map.layers[1].data[0] ~= nil) then
-		print ("0 is: "..self.map.layers[1].data[0])
-	else
-		print ("1 is: "..self.map.layers[1].data[1])
-	end
 	-- We're lazy and only doing layer 1
 	-- These specify the x & y value of the central tile,
 	-- i.e. the centrepoint of the camera, i.e. 
@@ -61,10 +56,10 @@ function WorldMap:onPush(player)
     self:setupPlayerSpritesheet()
 
     -- Useful stuff
-	self.moveSpeed = 0.05
+	self.moveSpeed = 0.1
 	self.keypressDelay = 0
 	self.keyBuffer = 0.05
-	self.collideWith = {true, false, false, true, true}
+	self.collideWith = self:getCollisions()
 	self.moved = false
 	self.moveType = "camera" -- camera for when the camera moves, player when player moves
 end
@@ -91,6 +86,20 @@ function WorldMap:setupMapSpritesheets()
 	self.mapSpriteBatch = love.graphics.newSpriteBatch(self.tilesetImage[1], 1000)
 end
 
+function WorldMap:getCollisions()
+	local collisions = {}
+	for k, v in pairs(self.map.tilesets[1].tiles) do
+		if v.properties["Collide"] ~= nil and v.properties["Collide"] == "1" then
+			collisions[v.id + 1] = true
+		else
+			collisions[v.id + 1] = false
+		end
+		print (v.id.." collisions: "..tostring(collisions[v.id]))
+	end
+	return collisions
+end
+
+
 function WorldMap:setupPlayerSpritesheet()
 	self.playerQuads = {}
 	self.playerQuads["down"] = love.graphics.newQuad(0, 0, 32, 32, 
@@ -108,14 +117,17 @@ function WorldMap:update(dt)
 	self.keypressDelay = self.keypressDelay - dt
 	if self.keypressDelay <= 0 then self.moved = false; end
 	local mapData = self.map.layers[1].data
+	local mapWidth = self.map.layers[1].width
+	local mapHeight = self.map.layers[1].height
 
 	-- Calculation for relative tile: (self.player.y) * 100 + (self.player.x) + 1
 	-- This adjusts for the lack of 0 entry in the array
 	if (love.keyboard.isDown("up") and self.keypressDelay <= 0 
 			and self.player.y > 0) then
 		if self.keypressDelay > - self.keyBuffer then self.player.dir = "up"; end
-		if self.player.dir == "up" and self.collideWith[
-				mapData[(self.player.y - 1)*100 + (self.player.x) + 1]] == false then
+		local destination = (self.player.y - 1)*mapWidth + (self.player.x) + 1
+		if self.player.dir == "up" and self.collideWith[mapData[destination]] ~= nil and
+				self.collideWith[mapData[destination]] == false then
 			self.player.y = self.player.y - 1
 			self.moved = true
 		end
@@ -124,9 +136,10 @@ function WorldMap:update(dt)
 	
 	elseif (love.keyboard.isDown("down") and self.keypressDelay <= 0 
 			and self.player.y < self.map.layers[1].height - 1) then
-		if self.keypressDelay > -self.keyBuffer then self.player.dir = "down"; end
-		if self.player.dir == "down" and self.collideWith[
-				mapData[(self.player.y + 1)*100 + (self.player.x) + 1]] == false then
+		if self.keypressDelay > - self.keyBuffer then self.player.dir = "down"; end
+		local destination = (self.player.y + 1)*mapWidth + (self.player.x) + 1
+		if self.player.dir == "down" and self.collideWith[mapData[destination]] ~= nil and
+				self.collideWith[mapData[destination]] == false then
 			self.player.y = self.player.y + 1
 			self.moved = true
 		end
@@ -136,8 +149,9 @@ function WorldMap:update(dt)
 	elseif (love.keyboard.isDown("left") and self.keypressDelay <= 0
 			and self.player.x > 0) then
 		if self.keypressDelay > -self.keyBuffer then self.player.dir = "left"; end
-		if self.player.dir == "left" and self.collideWith[
-				mapData[(self.player.y)*100 + (self.player.x - 1) + 1]] == false then
+		local destination = (self.player.y)*mapWidth + (self.player.x - 1) + 1
+		if self.player.dir == "left" and self.collideWith[mapData[destination]] ~= nil and
+				self.collideWith[mapData[destination]] == false then
 			self.player.x = self.player.x - 1
 			self.moved = true
 		end
@@ -147,18 +161,17 @@ function WorldMap:update(dt)
 	elseif (love.keyboard.isDown("right") and self.keypressDelay <= 0
 			and self.player.x < self.map.layers[1].width - 1) then
 		if self.keypressDelay > -self.keyBuffer then self.player.dir = "right"; end
-		if self.player.dir == "right" and self.collideWith[
-				mapData[(self.player.y)*100 + (self.player.x + 1) + 1]] == false then
+		local destination = (self.player.y)*mapWidth + (self.player.x + 1) + 1
+		if self.player.dir == "right" and self.collideWith[mapData[destination]] ~= nil and
+				self.collideWith[mapData[destination]] == false then
 			self.player.x = self.player.x + 1
 			self.moved = true
 		end
 		self.player.dir = "right"
 		self.keypressDelay = self.moveSpeed
 	end
+	--print("x: "..self.player.x.." y: "..self.player.y)
 	self:updateCamera()
-	if self.moved == true then
-		print (self.moveType)
-	end
 end
 
 -- To be called by the parent draw function
