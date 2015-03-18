@@ -5,6 +5,7 @@ StateMachine = require("src.statemachine")
 State = require("src.state")
 MainMenu = require("src.states.mainmenu")
 WorldMap = require("src.states.worldmap")
+Town = require("src.states.town")
 -- Data Structures:
 Stack = require("src.struct.stack")
 -- Player
@@ -16,6 +17,7 @@ function love.load()
 	stateList = {}
 	stateList["MainMenu"] = MainMenu
 	stateList["WorldMap"] = WorldMap
+	stateList["Town"] = Town
 	sm = StateMachine(stateList, "MainMenu", Player(0,0))
 end
 

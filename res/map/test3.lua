@@ -7,7 +7,7 @@ return {
   height = 25,
   tilewidth = 32,
   tileheight = 32,
-  nextobjectid = 1,
+  nextobjectid = 12,
   properties = {},
   tilesets = {
     {
@@ -128,6 +128,54 @@ return {
         2, 2, 2, 2, 2, 2, 4, 4, 6, 6, 6, 4, 4, 4, 4, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 9, 9, 9, 1, 1, 9, 9, 2, 2, 2, 2, 2, 2, 2, 2,
         2, 2, 2, 2, 2, 2, 2, 4, 4, 4, 4, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 9, 9, 9, 9, 2, 2, 2, 2, 2, 2, 2, 2, 2,
         2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
+      }
+    },
+    {
+      type = "objectgroup",
+      name = "Triggers",
+      visible = true,
+      opacity = 1,
+      properties = {},
+      objects = {
+        {
+          id = 8,
+          name = "Costa Rica",
+          type = "Trigger",
+          shape = "rectangle",
+          x = 443.904,
+          y = 323.56,
+          width = 22.9355,
+          height = 22.8778,
+          rotation = 89.424,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 10,
+          name = "Tortuga",
+          type = "Trigger",
+          shape = "rectangle",
+          x = 644.514,
+          y = 227.251,
+          width = 21.0064,
+          height = 23.8709,
+          rotation = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 11,
+          name = "Salem",
+          type = "Trigger",
+          shape = "rectangle",
+          x = 263.535,
+          y = 458.321,
+          width = 17.1871,
+          height = 15.2774,
+          rotation = 0,
+          visible = true,
+          properties = {}
+        }
       }
     }
   }

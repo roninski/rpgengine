@@ -56,10 +56,11 @@ function WorldMap:onPush(player)
     self:setupPlayerSpritesheet()
 
     -- Useful stuff
-	self.moveSpeed = 0.1
+	self.moveSpeed = 0.2
 	self.keypressDelay = 0
 	self.keyBuffer = 0.05
 	self.collideWith = self:getCollisions()
+    self.triggers = self:setupTriggers()
 	self.moved = false
 	self.moveType = "camera" -- camera for when the camera moves, player when player moves
 end
@@ -99,6 +100,23 @@ function WorldMap:getCollisions()
 	return collisions
 end
 
+function WorldMap:setupTriggers()
+	local triggers = {}
+	local i = 1
+	for k, v in pairs(self.map.layers) do
+		if v.type == "objectgroup" and v.name == "Triggers" then
+			for x, y in pairs(v.objects) do
+				local trigger = {}
+				trigger.x = math.floor(y.x/self.map.tilesets[1].tilewidth)
+				trigger.y = math.floor(y.y/self.map.tilesets[1].tilewidth)
+				trigger.name = y.name
+				triggers[i] = trigger
+				i = i + 1
+			end
+		end
+	end
+	return triggers
+end
 
 function WorldMap:setupPlayerSpritesheet()
 	self.playerQuads = {}
@@ -119,6 +137,18 @@ function WorldMap:update(dt)
 	local mapData = self.map.layers[1].data
 	local mapWidth = self.map.layers[1].width
 	local mapHeight = self.map.layers[1].height
+
+	if (love.keyboard.isDown("z")) then
+		for k, v in pairs(self.triggers) do
+			if self.player.x == v.x and self.player.y == v.y then
+				print ("You found a trigger named "..v.name.."! Congratulations!")
+				self.machineAction = true
+				self.machineToDo = "push"
+				self.machineTo = "Town"
+				self.player.activeTown = v.name
+			end
+		end
+	end
 
 	-- Calculation for relative tile: (self.player.y) * 100 + (self.player.x) + 1
 	-- This adjusts for the lack of 0 entry in the array
@@ -309,6 +339,5 @@ function WorldMap:updateCamera()
 	    end
 	end
 end
-
 
 return WorldMap
